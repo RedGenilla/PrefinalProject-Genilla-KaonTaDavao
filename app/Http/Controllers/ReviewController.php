@@ -2,21 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreReviewRequest;
 use App\Models\Eatery;
 use App\Models\Review;
-use Illuminate\Http\Request;
 
 class ReviewController extends Controller
 {
-    // Implemented with StoreReviewRequest in Step 7.
-    public function store(Request $request, Eatery $eatery)
-    {
-        abort(501, 'Review form not implemented yet.');
+    // Save a review for an open eatery.
+    public function store(
+        StoreReviewRequest $request,
+        Eatery $eatery
+    ) {
+        $data = $request->validated();
+
+        // Create through the eatery relationship.
+        $eatery->reviews()->create($data);
+
+        return redirect()
+            ->route('eateries.show', $eatery)
+            ->with('success', 'Salamat! Review posted.');
     }
 
-    // Implemented in Step 7.
+    // Delete a review.
     public function destroy(Review $review)
     {
-        abort(501, 'Review deletion not implemented yet.');
+        // Save the eatery before deleting the review.
+        $eatery = $review->eatery;
+
+        $review->delete();
+
+        return redirect()
+            ->route('eateries.show', $eatery)
+            ->with('success', 'Review deleted.');
     }
 }

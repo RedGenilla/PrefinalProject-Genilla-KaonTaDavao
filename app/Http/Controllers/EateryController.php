@@ -2,23 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreEateryRequest;
+use App\Http\Requests\UpdateEateryRequest;
 use App\Models\District;
 use App\Models\Eatery;
 use App\Models\Feature;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class EateryController extends Controller
 {
-    // Show eateries with combined filters and pagination.
+    // Show eateries with combined filters.
     public function index(Request $request)
     {
-        $query = Eatery::query()
-            ->with(['district', 'features'])
+        $query = Eatery::with(['district', 'features'])
             ->withCount('reviews')
             ->withAvg('reviews', 'rating');
 
-        // Search name or specialty.
         if ($request->filled('q')) {
             $search = $request->query('q');
 
@@ -28,7 +30,6 @@ class EateryController extends Controller
             });
         }
 
-        // Filter by district ID.
         if ($request->filled('district')) {
             $query->where(
                 'district_id',
@@ -36,7 +37,6 @@ class EateryController extends Controller
             );
         }
 
-        // Filter by feature name.
         if ($request->filled('feature')) {
             $feature = $request->query('feature');
 
@@ -45,9 +45,7 @@ class EateryController extends Controller
             });
         }
 
-        // Six eateries per page, ordered A-Z.
-        $eateries = $query
-            ->orderBy('name')
+        $eateries = $query->orderBy('name')
             ->paginate(6)
             ->withQueryString();
 
@@ -55,25 +53,55 @@ class EateryController extends Controller
         $features = Feature::orderBy('name')->get();
 
         return view('eateries.index', compact(
-            'eateries',
-            'districts',
-            'features'
+            'eateries', 'districts', 'features'
         ));
     }
 
-    // Display the create form (completed in Step 7).
+    // Display the create form.
     public function create()
     {
-        abort(501, 'Create form not implemented yet.');
+        $districts = District::orderBy('name')->get();
+        $features = Feature::orderBy('name')->get();
+
+        return view('eateries.create', compact(
+            'districts', 'features'
+        ));
     }
 
-    // Save an eatery (completed in Step 7).
-    public function store(Request $request)
+    // Save a new eatery and its related records.
+    public function store(StoreEateryRequest $request)
     {
-        abort(501, 'Store action not implemented yet.');
+        $data = $request->validated();
+
+        $eatery = DB::transaction(function () use ($data) {
+            $eatery = Eatery::create([
+                'name' => $data['name'],
+                'slug' => Str::slug($data['name']),
+                'district_id' => $data['district_id'],
+                'address' => $data['address'],
+                'price_range' => $data['price_range'],
+                'specialty' => $data['specialty'] ?? null,
+                'is_open' => $data['is_open'] ?? false,
+            ]);
+
+            // Create the permit through the relationship.
+            $eatery->permit()->create([
+                'permit_no' => $data['permit_no'],
+                'expires_on' => $data['expires_on'],
+            ]);
+
+            // Save selected features in the pivot table.
+            $eatery->features()->sync($data['features']);
+
+            return $eatery;
+        });
+
+        return redirect()
+            ->route('eateries.show', $eatery)
+            ->with('success', 'Eatery added.');
     }
 
-    // Show one eatery using slug binding.
+    // Display one eatery with eager-loaded data.
     public function show(Eatery $eatery)
     {
         $eatery->load([
@@ -89,26 +117,75 @@ class EateryController extends Controller
         $users = User::orderBy('name')->get();
 
         return view('eateries.show', compact(
-            'eatery',
-            'users'
+            'eatery', 'users'
         ));
     }
 
-    // Display the edit form (completed in Step 7).
+    // Display the edit form.
     public function edit(Eatery $eatery)
     {
-        abort(501, 'Edit form not implemented yet.');
+        $eatery->load(['permit', 'features']);
+
+        $districts = District::orderBy('name')->get();
+        $features = Feature::orderBy('name')->get();
+
+        return view('eateries.edit', compact(
+            'eatery', 'districts', 'features'
+        ));
     }
 
-    // Update an eatery (completed in Step 7).
-    public function update(Request $request, Eatery $eatery)
-    {
-        abort(501, 'Update action not implemented yet.');
+    // Update the eatery, permit, and features.
+    public function update(
+        UpdateEateryRequest $request,
+        Eatery $eatery
+    ) {
+        $data = $request->validated();
+
+        DB::transaction(function () use ($eatery, $data) {
+            $eatery->update([
+                'name' => $data['name'],
+                'slug' => Str::slug($data['name']),
+                'district_id' => $data['district_id'],
+                'address' => $data['address'],
+                'price_range' => $data['price_range'],
+                'specialty' => $data['specialty'] ?? null,
+                'is_open' => $data['is_open'] ?? false,
+            ]);
+
+            // Update or create its one permit.
+            $eatery->permit()->updateOrCreate(
+                [],
+                [
+                    'permit_no' => $data['permit_no'],
+                    'expires_on' => $data['expires_on'],
+                ]
+            );
+
+            // Replace old feature selections.
+            $eatery->features()->sync($data['features']);
+        });
+
+        return redirect()
+            ->route('eateries.show', $eatery)
+            ->with('success', 'Eatery updated.');
     }
 
-    // Delete an eatery (completed in Step 7).
+    // Delete the eatery and its related records.
     public function destroy(Eatery $eatery)
     {
-        abort(501, 'Delete action not implemented yet.');
+        DB::transaction(function () use ($eatery) {
+            $eatery->permit()->delete();
+            $eatery->dishes()->delete();
+            $eatery->reviews()->delete();
+
+            // Remove feature pivot records.
+            $eatery->features()->detach();
+
+            $eatery->delete();
+        });
+
+        return redirect()
+            ->route('eateries.index')
+            ->with('success', 'Eatery deleted.');
     }
 }
