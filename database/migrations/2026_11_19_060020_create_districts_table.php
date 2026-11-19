@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    // Create the districts table.
     public function up(): void
     {
         Schema::create('districts', function (Blueprint $table) {
@@ -16,10 +15,10 @@ return new class extends Migration
         });
     }
 
-    // Remove the table when rolling back.
     public function down(): void
     {
         Schema::dropIfExists('districts');
     }
 };
+
 
