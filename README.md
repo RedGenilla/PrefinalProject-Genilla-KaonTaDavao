@@ -1,66 +1,235 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Kaon Ta! Davao – Genilla's Food Guide
 
-## About Laravel
+**Student:** Red Isaac Genilla  
+**Project:** Prefinal Milestone Project  
+**Course:** CS Elective 2 – Full-Stack Development  
+**Framework:** Laravel 12  
+**Database:** SQLite
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Project Description
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Kaon Ta! Davao is a carinderia and eatery guide for
+Davao City. It lets visitors browse eateries by district,
+search for food specialties, filter by features, and view
+menus, permits, and customer reviews.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+The application also supports adding, editing, and
+deleting eateries, as well as posting and deleting reviews.
 
-## Learning Laravel
+No login is required for this project.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Technologies Used
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- PHP and Laravel 12
+- SQLite
+- Blade templates
+- Tailwind CSS
+- Vite
+- Eloquent ORM
+- Git and GitHub
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Installation and Setup
 
-## Laravel Sponsors
+Requirements:
+- PHP with SQLite support
+- Composer
+- Node.js and npm
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Clone the repository:
 
-### Premium Partners
+```bash
+git clone https://github.com/RedGenilla/PrefinalProject-Genilla-KaonTaDavao.git
+cd PrefinalProject-Genilla-KaonTaDavao
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Install PHP dependencies:
 
-## Contributing
+```bash
+composer install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Create the environment file:
 
-## Code of Conduct
+```bash
+cp .env.example .env
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Generate the application key:
 
-## Security Vulnerabilities
+```bash
+php artisan key:generate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Set the database connection in `.env`:
 
-## License
+```env
+DB_CONNECTION=sqlite
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Create the SQLite database:
+
+```bash
+touch database/database.sqlite
+```
+
+Run migrations and seeders:
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+Install frontend dependencies:
+
+```bash
+npm install
+```
+
+Build frontend assets:
+
+```bash
+npm run build
+```
+
+Start the application:
+
+```bash
+php artisan serve
+```
+
+Open http://127.0.0.1:8000 in your browser.
+
+On Windows PowerShell, use `Copy-Item` instead of
+`cp` if preferred, `New-Item` instead of `touch`,
+and `npm.cmd` if npm.ps1 is blocked.
+
+## Personalized Seed Data
+
+### Districts
+
+1. Poblacion
+2. Talomo
+3. Agdao
+4. Buhangin
+5. Toril
+6. Bunawan
+
+### Features
+
+1. Suki ni Genilla
+2. Budget Meal
+3. Halal
+4. Open 24 Hours
+5. Aircon
+6. Free Wi-Fi
+
+### Personalized Users
+
+| Name | Email |
+|---|---|
+| Red Isaac Genilla | genilla@kaonta.test |
+| Tita Genilla | tita.genilla@kaonta.test |
+
+Both seeded accounts use the password `kaonta2026`,
+stored as a hash. No login is implemented.
+
+### Personalized Eatery
+
+| Field | Value |
+|---|---|
+| Name | Carinderia ni Genilla |
+| Slug | carinderia-ni-genilla |
+| District | Poblacion |
+| Address | San Pedro St., Poblacion, Davao City |
+| Price Range | budget |
+| Specialty | Tinolang Manok |
+| Status | Open |
+| Permit Number | DVO-2026-0915 |
+| Permit Expiry | September 15, 2027 |
+
+The eatery has the Suki ni Genilla and Budget Meal
+features.
+
+### Dishes
+
+| Dish | Price | Bestseller |
+|---|---|---|
+| Tinolang Manok | PHP 85.00 | Yes |
+| Kinilaw na Tuna | PHP 120.00 | No |
+| Durian Shake | PHP 75.00 | No |
+
+### Personalized Review
+
+Reviewer: Tita Genilla
+
+Rating: 5 stars
+
+Review: Lami kaayo! Balik-balikan ni Tita Genilla.
+
+## Database Relationships
+
+| Relationship | Type | Purpose |
+|---|---|---|
+| District - Eatery | hasMany / belongsTo | A district contains multiple eateries, and each eatery belongs to one district. |
+| Eatery - Dish | hasMany / belongsTo | An eatery can list several dishes, each belonging to one eatery. |
+| Eatery - Review | hasMany / belongsTo | Each eatery can receive multiple customer reviews. |
+| User - Review | hasMany / belongsTo | A reviewer can write multiple reviews. |
+| Eatery - Feature | belongsToMany | Eateries can have multiple features, and features can belong to multiple eateries through eatery_feature. |
+| Eatery - Permit | hasOne / belongsTo | Each eatery has one business permit containing its number and expiry date. |
+| District - Review | hasManyThrough | A district can access reviews through the eateries belonging to it. |
+
+## Application Routes
+
+| Method | URI | Route Name |
+|---|---|---|
+| GET | / | home |
+| GET | /eateries | eateries.index |
+| GET | /eateries/create | eateries.create |
+| POST | /eateries | eateries.store |
+| GET | /eateries/{eatery} | eateries.show |
+| GET | /eateries/{eatery}/edit | eateries.edit |
+| PUT/PATCH | /eateries/{eatery} | eateries.update |
+| DELETE | /eateries/{eatery} | eateries.destroy |
+| POST | /eateries/{eatery}/reviews | eateries.reviews.store |
+| DELETE | /reviews/{review} | reviews.destroy |
+| GET | /districts | districts.index |
+| GET | /districts/{district} | districts.show |
+| GET | /reviewers/{user} | reviewers.show |
+
+Verify the routes with:
+
+```bash
+php artisan route:list --except-vendor
+```
+
+## Screenshots
+
+### Eatery Listing
+
+![Eatery Listing](screenshots/eatery-list.png)
+
+### Eatery Details and Reviews
+
+![Eatery Details](screenshots/eatery-details.png)
+
+### Create Form Validation
+
+![Create Form Validation](screenshots/create-validation.png)
+
+## Validation and Features
+
+- Required and unique eatery names
+- Valid district and feature selections
+- Permit number format and future expiry validation
+- Review ratings from 1 to 5
+- Minimum review length of 10 characters
+- Reviews blocked for closed eateries
+- Validation messages with retained form inputs
+- Eager loading to avoid unnecessary database queries
+- Search, filtering, and pagination
+- Slug-based eatery URLs
+
+## Author
+
+Red Isaac Genilla
+
